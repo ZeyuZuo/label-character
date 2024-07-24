@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.label.mapper.LabelMapper">
+    
+    <resultMap type="Label" id="LabelResult">
+        <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="name"    column="name"    />
+    </resultMap>
+
+    <sql id="selectLabelVo">
+        select id, parent_id, name from sys_label
+    </sql>
+
+    <select id="selectLabelList" parameterType="Label" resultMap="LabelResult">
+        <include refid="selectLabelVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectLabelById" parameterType="Long" resultMap="LabelResult">
+        <include refid="selectLabelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLabel" parameterType="Label" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_label
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="name != null and name != ''">name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLabel" parameterType="Label">
+        update sys_label
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLabelById" parameterType="Long">
+        delete from sys_label where id = #{id}
+    </delete>
+
+    <delete id="deleteLabelByIds" parameterType="String">
+        delete from sys_label where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
