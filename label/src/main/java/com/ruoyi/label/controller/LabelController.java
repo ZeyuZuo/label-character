@@ -67,57 +67,110 @@ public class LabelController extends BaseController
     {
         System.out.println(query);
 
-        if(Objects.isNull(query.getName()) && Objects.isNull(query.getParentName())) {
-            return success(labelService.selectLabelList(new Label()));
-        }
+//        // 如果没有查询条件，返回所有标签
+//        if(Objects.isNull(query.getName()) && Objects.isNull(query.getParentName())) {
+//            return success(labelService.selectLabelList(new Label()));
+//        }
 
-        Set<Label> set1 = new HashSet<>();
-        Set<Label> set2 = new HashSet<>();
         Label tmp = new Label();
 
-        if(!Objects.isNull(query.getParentName())) {
-            // 查询父节点的子节点
-
-            tmp.setName(query.getParentName());
+        if(Objects.isNull(query.getName()) && Objects.isNull(query.getParentName())) {
+            return success(labelService.selectLabelList(new Label()));
+        } else if (!Objects.isNull(query.getName()) && !Objects.isNull(query.getParentName())) {
+            tmp.setName(query.getName());
             List<Label> labels = labelService.selectLabelList(tmp);
             tmp.setName(null);
 
+            Set<Label> list = new HashSet<>();
             for(Label label : labels) {
-                set1.add(label);
-                tmp.setParentId(label.getId());
-                set1.addAll(labelService.selectLabelList(tmp));
+                if(label.getParentId() != null) {
+                    Label parent = labelService.selectLabelById(label.getParentId());
+                    if(!Objects.isNull(parent) && parent.getName().contains(query.getParentName())) {
+                        list.add(label);
+                        list.add(parent);
+                        list.addAll(getAllChildren(label));
+                    }
+                }
             }
 
-            tmp.setId(null);
-        }
-
-        if(!Objects.isNull(query.getName())) {
-            // 查询标签
-            tmp.setName(query.getName());
-            set2.addAll(labelService.selectLabelList(tmp));
-
+            return success(list);
+        } else {
+            String name = "";
+            if(!Objects.isNull(query.getName())){
+                name = query.getName();
+            } else {
+                name = query.getParentName();
+            }
+            tmp.setName(name);
+            List<Label> labels = labelService.selectLabelList(tmp);
             tmp.setName(null);
+
+            Set<Label> list = new HashSet<>();
+            for(Label label : labels) {
+                list.add(label);
+                list.addAll(getAllChildren(label));
+            }
+
+            return success(list);
         }
 
-        Set<Label> set = new HashSet<>();
-        Set<Label> ans = new HashSet<>();
-        set.addAll(set1);
-        set.addAll(set2);
+//        if(!Objects.isNull(query.getName())) {
+//            if(!Objects.isNull(query.getParentName())) {
+//                /*
+//                 * 先根据name查询标签，再判断它的parentName是否是query.getParentName()，都是模糊查询
+//                 */
+//                tmp.setName(query.getName());
+//                List<Label> labels = labelService.selectLabelList(tmp);
+//                tmp.setName(null);
+//
+//                Set<Label> list = new HashSet<>();
+//                for(Label label : labels) {
+//                    if(label.getParentId() != null) {
+//                        Label parent = labelService.selectLabelById(label.getParentId());
+//                        if(!Objects.isNull(parent) && parent.getName().contains(query.getParentName())) {
+//                            list.add(label);
+//                            list.add(parent);
+//                            list.addAll(getAllChildren(label));
+//                        }
+//                    }
+//                }
+//
+//                return success(list);
+//            } else {
+//                tmp.setName(query.getName());
+//                List<Label> labels = labelService.selectLabelList(tmp);
+//                tmp.setName(null);
+//
+//                Set<Label> list = new HashSet<>();
+//                for(Label label : labels) {
+//                    list.add(label);
+//                    list.addAll(getAllChildren(label));
+//                }
+//
+//                return success(list);
+//            }
+//        } else {
+//            if(Objects.isNull(query.getParentName())) {
+//                return success(labelService.selectLabelList(new Label()));
+//            } else {
+//                tmp.setName(query.getParentName());
+//                List<Label> labels = labelService.selectLabelList(tmp);
+//                tmp.setName(null);
+//
+//                Set<Label> list = new HashSet<>();
+//                for(Label label : labels) {
+//                    list.add(label);
+//                    list.addAll(getAllChildren(label));
+//                }
+//
+//                return success(list);
+//            }
+//        }
 
-        // 递归查询所有子节点
-        for(Label label : set) {
-            ans.add(label);
-            ans.addAll(getAllChildren(label));
-        }
-
-        List<Label> list = new ArrayList<>(ans);
-
-        // List<Label> list = labelService.selectLabelList(label);
-        return success(list);
     }
 
-    private Set<Label> getAllChildren(Label parentLabel) {
-        Set<Label> allChildren = new HashSet<>();
+    private List<Label> getAllChildren(Label parentLabel) {
+        List<Label> allChildren = new ArrayList<>();
         Label tmp = new Label();
         tmp.setParentId(parentLabel.getId());
         List<Label> directChildren = labelService.selectLabelList(tmp);
@@ -130,6 +183,14 @@ public class LabelController extends BaseController
         return allChildren;
     }
 
+    private Label getParent(Label label) {
+        Label parent = labelService.selectLabelById(label.getParentId());
+        if(parent == null) {
+            return label;
+        }
+        return parent;
+    }
+
     /**
      * 导出标签系统列表
      */
@@ -139,7 +200,7 @@ public class LabelController extends BaseController
     public void export(HttpServletResponse response, Label label)
     {
         List<Label> list = labelService.selectLabelList(label);
-        ExcelUtil<Label> util = new ExcelUtil<Label>(Label.class);
+        ExcelUtil<Label> util = new ExcelUtil<>(Label.class);
         util.exportExcel(response, list, "标签系统数据");
     }
 

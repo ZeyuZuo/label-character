@@ -87,11 +87,53 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
+  },
+  {
+    path: '/system/character/details',
+    component: () => import('@/views/system/character/details'),
+    hidden: true,
+    name: 'CharacterDetails',
+    meta: { title: '详情', activeMenu: '/system/character' },
+    query: { id_card: '' } // 这里定义默认的传递参数
   }
+  // {
+  //   path: '/system/character',
+  //   component: Layout,
+  //   redirect: '/system/character/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/system/character/index'),
+  //       name: 'CharacterIndex',
+  //       meta: { title: '人物列表', icon: 'peoples' }
+  //     },
+  //     {
+  //       path: 'details',
+  //       component: () => import('@/views/system/character/details'),
+  //       name: 'CharacterDetails',
+  //       hidden: true,
+  //       meta: { title: '人物详情', activeMenu: '/system/character' }
+  //     }
+  //   ]
+  // }
 ]
 
 // 动态路由，基于用户权限动态去加载
 export const dynamicRoutes = [
+  {
+    path: '/system/character',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'details/',
+        query: { id_card: '' }, // 这里定义默认的传递参数
+        component: () => import('@/views/system/character/details'),
+        name: 'CharacterDetails',
+        meta: { title: '人物详情', activeMenu: '/system/character' }
+      }
+    ]
+  },
   {
     path: '/system/user-auth',
     component: Layout,
@@ -161,7 +203,15 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },
+  // {
+  //   path: '/system/character/details',
+  //   component: () => import('@/views/system/character/details'),
+  //   name: 'CharacterDetails',
+  //   meta: { title: '详情', activeMenu: '/system/character' },
+  //   query: { id_card: '' } // 这里定义默认的传递参数
+  // }
+
 ]
 
 // 防止连续点击多次路由报错

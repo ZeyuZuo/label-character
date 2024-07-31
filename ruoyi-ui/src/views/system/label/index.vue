@@ -26,7 +26,7 @@
         />
       </el-form-item>
       <el-form-item>
-	    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+	      <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -63,7 +63,17 @@
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
 <!--      <el-table-column label="标签id" prop="id" />-->
-      <el-table-column label="标签名称" align="center" prop="name" />
+<!--      <el-table-column label="标签名称" align="center" prop="name" />-->
+      <el-table-column label="标签名称" align="left" prop="name">
+<!--        <template slot-scope="scope">-->
+<!--          <div :class="'level-' + scope.row.level">{{ scope.row.name }}</div>-->
+<!--        </template>-->
+<!--        <template slot-scope="scope">-->
+<!--          <div :class="'level-' + scope.row.level">-->
+<!--            <span class="aligned-content">{{ scope.row.name }}</span>-->
+<!--          </div>-->
+<!--        </template>-->
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -157,6 +167,15 @@ export default {
     this.getList();
   },
   methods: {
+    addLevels(nodes, level) {
+      return nodes.map(node => {
+        node.level = level;
+        if (node.children && node.children.length > 0) {
+          node.children = this.addLevels(node.children, level + 1);
+        }
+        return node;
+      });
+    },
     /** 查询标签系统列表 */
     getList() {
       // alert('查询标签系统列表')
@@ -169,6 +188,7 @@ export default {
 
         this.sortTreeNodes(data.children);
         this.labelList = data.children;
+        this.addLevels(this.labelList, 0);
 
         this.loading = false;
       });
@@ -196,6 +216,7 @@ export default {
 
         // 排序节点，使没有子节点的排在前面
         this.sortTreeNodes(data.children);
+        this.addLevels(data.children, 0);
 
         this.labelOptions.push(data);
       });
@@ -302,7 +323,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      this.$modal.confirm('是否确认删除标签系统编号为"' + row.id + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除标签"' + row.name + '"的数据项？').then(function() {
         return delLabel(row.id);
       }).then(() => {
         this.getList();
@@ -312,3 +333,33 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+.aligned-content {
+  display: flex;
+  align-items: center;
+}
+
+.level-0 {
+  padding-left: 40px;
+  text-align: left;
+}
+
+.level-1 {
+  padding-left: 60px;
+  text-align: left;
+}
+
+.level-2 {
+  padding-left: 80px;
+  text-align: left;
+}
+
+.level-3 {
+  padding-left: 100px;
+  text-align: left;
+}
+
+/* 根据需要继续添加更多级别 */
+</style>

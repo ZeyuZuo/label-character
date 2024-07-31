@@ -76,7 +76,10 @@ public class LabelServiceImpl implements ILabelService
     @Override
     public int deleteLabelByIds(Long[] ids)
     {
-        return labelMapper.deleteLabelByIds(ids);
+        for(Long id : ids){
+            deleteLabelById(id);
+        }
+        return 1;
     }
 
     /**
@@ -88,6 +91,18 @@ public class LabelServiceImpl implements ILabelService
     @Override
     public int deleteLabelById(Long id)
     {
+        System.out.println("deleteLabelById: " + id);
+
+        Label tmp = new Label();
+        tmp.setParentId(id);
+        List<Label> children = labelMapper.selectLabelList(tmp);
+        if(children.isEmpty()){
+            System.out.println("deleteLabelById: " + id + " is leaf");
+            return labelMapper.deleteLabelById(id);
+        }
+        for(Label child : children) {
+            deleteLabelById(child.getId());
+        }
         return labelMapper.deleteLabelById(id);
     }
 }
