@@ -30,6 +30,7 @@
 
 import RelationComponent from "@/views/system/character/components/relationComponent.vue";
 import DoubleTimeLineComponent from "@/views/system/character/components/doubleTimeLineComponent.vue";
+import TimeLineComponent from "@/views/system/character/components/timeLineComponent.vue";
 import {getPersonInfo, getPersonTag} from "@/api/system/character";
 
 export default {
@@ -109,27 +110,13 @@ export default {
           "id": 116
         }]
       }, {
-        "label": "关系特征",
+        "label": "人物关系",
         "value": 3,
         "id": 102,
-        "children": [{
-          "label": "家庭背景",
-          "value": 16,
-          "id": 117
-        }, {
-          "label": "社会关系",
-          "value": 17,
-          "id": 118
-        }, {
-          "label": "网友关系",
-          "value": 18,
-          "id": 120
-        }]
       }, {
         "label": "推断特征",
         "value": 4,
-        "id": 103,
-        "children": []
+        "id": 103
       }],
       tag_numProps: {
         "multiple": false
@@ -154,7 +141,7 @@ export default {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
           // console.log(this.formData.tag_num);
-          if(this.formData.tag_num.includes(6)){ // 教育经历,工作经历
+          if (this.formData.tag_num.includes(6)) { // 教育经历,工作经历
             console.log('教育经历,工作经历');
             this.currentComponent = DoubleTimeLineComponent;
             this.componentProps = {
@@ -163,7 +150,7 @@ export default {
               leftData: this.person_tag['教育经历'],
               rightData: this.person_tag['工作经历']
             };
-          } else if (this.formData.tag_num.includes(8)){ // 前科记录,非法活动
+          } else if (this.formData.tag_num.includes(8)) { // 前科记录,非法活动
             this.currentComponent = DoubleTimeLineComponent;
             this.componentProps = {
               leftName: '前科记录',
@@ -171,15 +158,15 @@ export default {
               leftData: this.person_tag['前科记录'],
               rightData: this.person_tag['非法活动']
             };
-          } else if(this.formData.tag_num.includes(9)){ // '活动区域轨迹,近期车辆使用情况'
+          } else if (this.formData.tag_num.includes(9)) { // '活动区域轨迹,近期车辆使用情况'
             this.currentComponent = DoubleTimeLineComponent;
             this.componentProps = {
               leftName: '活动区域轨迹',
-              rightName: '近期车辆使用情况',
+              rightName: '近期车辆使用记录',
               leftData: this.person_tag['活动区域轨迹'],
-              rightData: this.person_tag['近期车辆使用情况']
+              rightData: this.person_tag['近期车辆使用记录']
             };
-          } else if(this.formData.tag_num.includes(10)){ // '异常资金交易记录,贷款记录'
+          } else if (this.formData.tag_num.includes(10)) { // '异常资金交易记录,贷款记录'
             this.currentComponent = DoubleTimeLineComponent;
             this.componentProps = {
               leftName: '异常资金交易记录',
@@ -187,7 +174,7 @@ export default {
               leftData: this.person_tag['异常资金交易记录'],
               rightData: this.person_tag['贷款记录']
             };
-          } else if(this.formData.tag_num.includes(11)) {//'网络痕迹记录,社交媒体痕迹'
+          } else if (this.formData.tag_num.includes(11)) { //'网络痕迹记录,社交媒体痕迹'
             this.currentComponent = DoubleTimeLineComponent;
             this.componentProps = {
               leftName: '网络痕迹记录',
@@ -195,6 +182,32 @@ export default {
               leftData: this.person_tag['网络痕迹记录'],
               rightData: this.person_tag['社交媒体痕迹']
             };
+          } else if (this.formData.tag_num.includes(3)) { // 人物关系
+            this.currentComponent = RelationComponent;
+            this.componentProps = {
+              person_info: this.person_info,
+              person_tag: this.person_tag,
+            };
+          } else if (this.formData.tag_num.includes(12)) {
+            this.currentComponent = TimeLineComponent;
+            this.componentProps = {
+              data: this.person_tag['购物信息记录']
+            }
+          } else if (this.formData.tag_num.includes(13)) {
+            this.currentComponent = TimeLineComponent;
+            this.componentProps = {
+              data: this.person_tag['通信数据记录']
+            }
+          } else if (this.formData.tag_num.includes(14)) {
+            this.currentComponent = TimeLineComponent;
+            this.componentProps = {
+              data: this.person_tag['书籍阅读记录']
+            }
+          } else if (this.formData.tag_num.includes(15)) {
+            this.currentComponent = TimeLineComponent;
+            this.componentProps = {
+              data: this.person_tag['医疗记录']
+            }
           }
         }
       })
@@ -213,12 +226,6 @@ export default {
       });
 
       await Promise.all([personInfoPromise, personTagPromise]);
-
-      this.currentComponent = RelationComponent;
-      this.componentProps = {
-        person_info: this.person_info,
-        person_tag: this.person_tag,
-      };
     }
   }
 }

@@ -5,7 +5,6 @@
       <ul class="timeline">
         <li v-for="(item, index) in formattedLeftData" :key="index" class="timeline-item">
           <div class="timeline-content">
-<!--            <p><strong>时间:</strong> {{ item.time }}</p>-->
             <p v-html="item.details"></p>
           </div>
         </li>
@@ -17,7 +16,6 @@
       <ul class="timeline">
         <li v-for="(item, index) in formattedRightData" :key="index" class="timeline-item">
           <div class="timeline-content">
-<!--            <p><strong>时间:</strong> {{ item.time }}</p>-->
             <p v-html="item.details"></p>
           </div>
         </li>

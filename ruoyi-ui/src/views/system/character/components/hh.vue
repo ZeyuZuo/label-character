@@ -1,6 +1,6 @@
 <template>
   <div class="timeline-container">
-    <div v-for="(record, index) in buildHtml" :key="index" class="timeline-item">
+    <div v-for="(record, index) in buildHtml" :key="index" class="timeline-item" :class="{'left': isLeft(index), 'right': !isLeft(index)}">
       <div v-html="record.details"></div>
     </div>
     <div class="vertical-line"></div>
@@ -52,7 +52,7 @@ export default {
 
 .vertical-line {
   position: absolute;
-  left: 25%;
+  left: 50%;
   top: 0;
   bottom: 0;
   width: 4px;
@@ -64,18 +64,30 @@ export default {
   width: 45%;
   padding: 10px;
   box-sizing: border-box;
-  text-align: left;
-  left: 40%;
 }
 
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  width: 33%; /* Adjust as needed */
-  height: 2px;
-  background-color: #2196F3;
-  transform: translateY(-50%);
+.timeline-item.left {
+  right: 0;
+  text-align: right;
+}
+
+.timeline-item.right {
+  left: 55%;
+  text-align: left;
+}
+
+.timeline-item .content {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-item.left .content {
+  margin-right: 20px;
+}
+
+.timeline-item.right .content {
+  margin-left: 20px;
 }
 </style>

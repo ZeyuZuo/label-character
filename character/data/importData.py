@@ -7,7 +7,7 @@ with open('./张三/personInfo.json', 'r', encoding='utf-8') as file:
 
 # 连接到Neo4j数据库
 uri = "bolt://localhost:7687"
-driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
+driver = GraphDatabase.driver(uri)
 
 
 def create_person(tx, person_data):
