@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from models import Person, Tag, tagUtils, driver, ReturnObj
+from config import tag_class
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -68,6 +69,34 @@ def get_person():
     return create_response(data=persons)
 
 
+"""
+获取所有个人信息
+"""
+
+
+@app.route('/person/info', methods=['GET'])
+def get_person_info():
+    id_card = request.args.get('id_card')
+    if id_card is None:
+        return create_response(msg='id_card is required', code=400)
+
+    person = {}
+
+    with driver.session() as session:
+        result = session.run("""
+            MATCH (p:Person {身份证号码: $id_card})
+            RETURN p
+        """, id_card=id_card)
+        for record in result:
+            person_node = record["p"]
+            for key in person_node.keys():
+                # print(key, person_node[key])
+                person[key] = person_node[key]
+
+    print(person)
+    return create_response(data=person)
+
+
 # 定义查询特定 Person 节点及其关联的所有 Tag 节点的路由，根据身份证id获取各个tag内容
 @app.route('/person/tags', methods=['GET'])
 def get_person_tags():
@@ -88,7 +117,16 @@ def get_person_tags():
 @app.route('/person/tag', methods=['GET'])
 def get_person_tag():
     id_card = request.args.get('id_card')
-    tag_name = request.args.get('tag_name')
+    tag_num = request.args.get('tag_num')
+
+    if tag_num == None:
+        return create_response(msg='tag_num is required', code=400)
+    if (tag_num not in tag_class):
+        return create_response(msg='tag_num is invalid', code=400)
+    if (tag_num in ['1', '2', '3']):
+        return create_response(msg='tag_num is invalid', code=400)
+
+    tag_name = tag_class[int(tag_num)]
 
     names = tag_name.split(',')
     tag_names = []

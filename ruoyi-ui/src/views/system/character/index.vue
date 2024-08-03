@@ -75,13 +75,11 @@ export default {
     // 查看人物详情
     seeDetails: function(row) {
       // 跳转到详情页并带上id_card参数
-      const idCard = row.id_card;
-      console.log(idCard);
-      console.log('/character/people/details/'+idCard);
+      console.log(row.id_card);
       this.$router.push({
-        path: '/system/character/details/',
+        path: '/character/peopleInfo',
         query: {
-          id_card: idCard
+          id_card: row.id_card
         }
       });
     },

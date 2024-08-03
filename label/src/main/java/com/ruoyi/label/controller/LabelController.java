@@ -109,6 +109,7 @@ public class LabelController extends BaseController
             for(Label label : labels) {
                 list.add(label);
                 list.addAll(getAllChildren(label));
+                list.add(getParent(label));
             }
 
             return success(list);

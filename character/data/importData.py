@@ -2,7 +2,7 @@ from neo4j import GraphDatabase
 import json
 
 # 读取JSON文件
-with open('./李四/personInfo.json', 'r', encoding='utf-8') as file:
+with open('./张三/personInfo.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
 
 # 连接到Neo4j数据库
@@ -40,7 +40,8 @@ def create_person(tx, person_data):
         祖籍: $祖籍,
         特殊经历: $特殊经历,
         特殊外表与标记: $特殊外表与标记,
-        犯罪技能: $犯罪技能
+        犯罪技能: $犯罪技能,
+        婚姻状况: $婚姻状况
     })
     """, person_data)
 

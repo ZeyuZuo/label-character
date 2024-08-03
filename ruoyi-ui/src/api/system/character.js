@@ -15,3 +15,27 @@ export function listPerson(query) {
     params: query
   });
 }
+
+export function getPersonInfo(id_card, tag_num) {
+  if(tag_num === 5) {
+    return axios({
+      url: 'http://localhost:12345/person/info',
+      method: 'get',
+      params: {id_card}
+    })
+  }else{
+    return axios({
+      url: 'http://localhost:12345/person/tag',
+      method: 'get',
+      params: {id_card, tag_num}
+    })
+  }
+}
+
+export function getPersonTag(id_card) {
+  return axios({
+    url: 'http://localhost:12345/person/tags',
+    method: 'get',
+    params: {id_card}
+  })
+}
