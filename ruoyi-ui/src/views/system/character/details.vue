@@ -31,6 +31,7 @@
 import RelationComponent from "@/views/system/character/components/relationComponent.vue";
 import DoubleTimeLineComponent from "@/views/system/character/components/doubleTimeLineComponent.vue";
 import TimeLineComponent from "@/views/system/character/components/timeLineComponent.vue";
+import PersonComponent from "@/views/system/character/components/personComponent.vue";
 import {getPersonInfo, getPersonTag} from "@/api/system/character";
 
 export default {
@@ -39,7 +40,7 @@ export default {
   data() {
     return {
       id_card: '',
-      person_name: '张三',
+      person_name: '',
       person_info: {},
       person_tag: {},
       currentComponent: [], // 当前组件
@@ -127,6 +128,7 @@ export default {
   watch: {},
   async created() {
     this.id_card = this.$route.query.id_card;
+    this.person_name = this.$route.query.name;
     console.log(this.id_card);
     if (!this.id_card) {
       alert('请先选择一个人物');
@@ -208,6 +210,11 @@ export default {
             this.componentProps = {
               data: this.person_tag['医疗记录']
             }
+          } else if (this.formData.tag_num.includes(5)) {
+            this.currentComponent = PersonComponent;
+            this.componentProps = {
+              data: this.person_info
+            }
           }
         }
       })
@@ -226,6 +233,7 @@ export default {
       });
 
       await Promise.all([personInfoPromise, personTagPromise]);
+      // this.person_name = this.person_info['姓名'];
     }
   }
 }

@@ -79,7 +79,8 @@ export default {
       this.$router.push({
         path: '/character/peopleInfo',
         query: {
-          id_card: row.id_card
+          id_card: row.id_card,
+          name: row.name
         }
       });
     },
