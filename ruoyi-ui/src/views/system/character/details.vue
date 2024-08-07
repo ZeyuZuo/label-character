@@ -90,7 +90,7 @@ export default {
           "value": 10,
           "id": 111
         }, {
-          "label": "网络痕迹记录,社交媒体痕迹",
+          "label": "网络痕迹记录,书籍阅读记录",
           "value": 11,
           "id": 112
         }, {
@@ -102,7 +102,7 @@ export default {
           "value": 13,
           "id": 114
         }, {
-          "label": "书籍阅读记录",
+          "label": "社交媒体痕迹",
           "value": 14,
           "id": 115
         }, {
@@ -166,7 +166,9 @@ export default {
               leftName: '活动区域轨迹',
               rightName: '近期车辆使用记录',
               leftData: this.person_tag['活动区域轨迹'],
-              rightData: this.person_tag['近期车辆使用记录']
+              rightData: this.person_tag['近期车辆使用记录'],
+              guess: '近一个月离开常住地频率',
+              guessData: this.person_tag['推断特征']['近一个月离开常住地频率']
             };
           } else if (this.formData.tag_num.includes(10)) { // '异常资金交易记录,贷款记录'
             this.currentComponent = DoubleTimeLineComponent;
@@ -174,15 +176,19 @@ export default {
               leftName: '异常资金交易记录',
               rightName: '贷款记录',
               leftData: this.person_tag['异常资金交易记录'],
-              rightData: this.person_tag['贷款记录']
+              rightData: this.person_tag['贷款记录'],
+              guess: '近期经济状况',
+              guessData: this.person_tag['推断特征']['近期经济状况']
             };
           } else if (this.formData.tag_num.includes(11)) { //'网络痕迹记录,社交媒体痕迹'
             this.currentComponent = DoubleTimeLineComponent;
             this.componentProps = {
               leftName: '网络痕迹记录',
-              rightName: '社交媒体痕迹',
+              rightName: '书籍阅读记录',
               leftData: this.person_tag['网络痕迹记录'],
-              rightData: this.person_tag['社交媒体痕迹']
+              rightData: this.person_tag['书籍阅读记录'],
+              guess: '近期关注内容',
+              guessData: this.person_tag['推断特征']['近期关注内容']
             };
           } else if (this.formData.tag_num.includes(3)) { // 人物关系
             this.currentComponent = RelationComponent;
@@ -203,7 +209,7 @@ export default {
           } else if (this.formData.tag_num.includes(14)) {
             this.currentComponent = TimeLineComponent;
             this.componentProps = {
-              data: this.person_tag['书籍阅读记录']
+              data: this.person_tag['社交媒体痕迹']
             }
           } else if (this.formData.tag_num.includes(15)) {
             this.currentComponent = TimeLineComponent;

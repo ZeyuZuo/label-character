@@ -2,7 +2,7 @@ from neo4j import GraphDatabase
 import json
 
 # 读取JSON文件
-with open('./张三/personInfo.json', 'r', encoding='utf-8') as file:
+with open('./李四/personInfo.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
 
 # 连接到Neo4j数据库

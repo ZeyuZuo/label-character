@@ -50,7 +50,7 @@ export default {
   computed: {},
   watch: {},
   created() {
-    this.queryPerson();
+    // this.queryPerson();
   },
   mounted() {},
   methods: {

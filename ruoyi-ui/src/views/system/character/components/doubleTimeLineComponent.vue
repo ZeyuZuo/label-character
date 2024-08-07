@@ -21,6 +21,10 @@
         </li>
       </ul>
     </div>
+    <div v-show=isVisible class="divider"></div>
+    <div v-show=isVisible class="guess">
+      <div v-html="guessContent"></div>
+    </div>
   </div>
 </template>
 
@@ -43,6 +47,14 @@ export default {
     rightData: {
       type: String,
       required: true
+    },
+    guess: {
+      type: String,
+      required: false
+    },
+    guessData: {
+      type: String,
+      required: false
     }
   },
   mounted() {
@@ -53,6 +65,13 @@ export default {
   },
   computed: {
     formattedLeftData() {
+      // 有没有guess
+      if (this.guess) {
+        this.isVisible = true;
+        this.guessContent = this.formattedGuessData();
+      } else {
+        this.isVisible = false;
+      }
       try {
         const left = JSON.parse(this.leftData);
         const sortedKeys = Object.keys(left).sort((a, b) => a - b);
@@ -83,20 +102,40 @@ export default {
       }
     }
   },
+  methods: {
+    formattedGuessData() {
+      try {
+        return `<strong>${this.guess}:</strong><br><p>${this.guessData}</p>`
+      } catch (error) {
+        console.error('Error parsing guessData:', error);
+        return '';
+      }
+    }
+  },
   data() {
-    return {};
+    return {
+      guessContent: '',
+      isVisible: false
+    };
   }
 };
 </script>
 
 <style>
+
+.guess {
+  width: 20%;
+  padding: 20px;
+  overflow: auto;
+}
+
 .container {
   display: flex;
   height: 100vh;
 }
 
 .left, .right {
-  width: 50%;
+  width: 40%;
   padding: 20px;
   overflow-y: auto;
 }

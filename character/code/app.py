@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from models import Person, Tag, tagUtils, driver, ReturnObj
+from models import Person, Tag, tagUtils, driver, ReturnObj, add_inference_tags
 from config import tag_class
 from flask_cors import CORS
 
@@ -69,17 +69,7 @@ def get_person():
     return create_response(data=persons)
 
 
-"""
-获取所有个人信息
-"""
-
-
-@app.route('/person/info', methods=['GET'])
-def get_person_info():
-    id_card = request.args.get('id_card')
-    if id_card is None:
-        return create_response(msg='id_card is required', code=400)
-
+def get_info(id_card):
     person = {}
 
     with driver.session() as session:
@@ -94,7 +84,21 @@ def get_person_info():
                 person[key] = person_node[key]
 
     print(person)
-    return create_response(data=person)
+    return person
+
+
+"""
+获取所有个人信息
+"""
+
+
+@app.route('/person/info', methods=['GET'])
+def get_person_info():
+    id_card = request.args.get('id_card')
+    if id_card is None:
+        return create_response(msg='id_card is required', code=400)
+
+    return create_response(data=get_info(id_card))
 
 
 # 定义查询特定 Person 节点及其关联的所有 Tag 节点的路由，根据身份证id获取各个tag内容
@@ -111,6 +115,9 @@ def get_person_tags():
             tags[record['name']] = record['content']
 
     print(tags)
+    live_place = get_info(id_card)['常住地']
+    # 添加推断特征
+    tags = add_inference_tags(tags, live_place)
     return create_response(data=tags)
 
 
@@ -121,9 +128,9 @@ def get_person_tag():
 
     if tag_num == None:
         return create_response(msg='tag_num is required', code=400)
-    if (tag_num not in tag_class):
+    if tag_num not in tag_class:
         return create_response(msg='tag_num is invalid', code=400)
-    if (tag_num in ['1', '2', '3']):
+    if tag_num in ['1', '2', '3']:
         return create_response(msg='tag_num is invalid', code=400)
 
     tag_name = tag_class[int(tag_num)]
