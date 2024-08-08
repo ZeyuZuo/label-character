@@ -1,9 +1,15 @@
 <template>
-  <div class="timeline-container">
-    <div v-for="(record, index) in buildHtml" :key="index" class="timeline-item">
-      <div v-html="record.details"></div>
+  <div class="container">
+    <div class="timeline-container">
+<!--      <div class="vertical-line"></div>-->
+      <div v-for="(record, index) in buildHtml" :key="index" class="timeline-item">
+        <div v-html="record.details"></div>
+      </div>
+      <!--    <div v-show=isVisible class="divider"></div>-->
     </div>
-    <div class="vertical-line"></div>
+    <div v-show=isVisible class="guess">
+      <div v-html="guessContent"></div>
+    </div>
   </div>
 </template>
 
@@ -14,10 +20,24 @@ export default {
     data: {
       type: String,
       required: true
+    },
+    guess: {
+      type: String,
+      required: false
+    },
+    guessData: {
+      type: String,
+      required: false
     }
   },
   computed: {
     buildHtml() {
+      if(this.guess) {
+        this.isVisible = true;
+        this.guessContent = this.formattedGuessData();
+      } else {
+        this.isVisible = false;
+      }
       try {
         const data = JSON.parse(this.data);
         const sortedKeys = Object.keys(data).sort((a, b) => a - b);
@@ -34,48 +54,53 @@ export default {
     }
   },
   methods: {
-    isLeft(index) {
-      return index % 2 === 0;
+    formattedGuessData() {
+      try {
+        return `<strong>${this.guess}:</strong><br><p>${this.guessData}</p>`
+      } catch (error) {
+        console.error('Error parsing guessData:', error);
+        return '';
+      }
     }
+  },
+  data() {
+    return {
+      guessContent: '',
+      isVisible: false
+    };
   }
 }
 </script>
 
-<style scoped>
-.timeline-container {
-  position: relative;
-  padding: 20px 0;
-  width: 80%;
-  margin: auto;
-  height: 90%;
-}
-
-.vertical-line {
-  position: absolute;
-  left: 25%;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background-color: #2196F3;
-}
-
+<style>
 .timeline-item {
   position: relative;
-  width: 45%;
+  width: 60%;
   padding: 10px;
   box-sizing: border-box;
   text-align: left;
-  left: 40%;
+  left: 0;
+  margin-bottom: 20px; /* Add some space between items */
 }
 
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  width: 33%; /* Adjust as needed */
-  height: 2px;
-  background-color: #2196F3;
-  transform: translateY(-50%);
+.container {
+  display: flex;
 }
+
+.timeline-container {
+  position: relative; /* Make this container the reference point for absolute positioning */
+  padding: 0 0 60px 0;
+  width: 40%;
+  margin: auto;
+  height: 100%;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.guess {
+  width: 20%;
+  padding: 20px;
+  overflow: auto;
+}
+
 </style>

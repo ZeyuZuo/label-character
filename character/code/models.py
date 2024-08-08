@@ -60,9 +60,9 @@ def add_inference_tags(tags, live_place) -> dict:
         if (datetime.datetime.strptime(content['时间'], "%Y-%m-%d") > three_month_ago
                 and content['地点'] != live_place):
             leave_home_frequency += 1
-    if leave_home_frequency > 10:
+    if leave_home_frequency > 8:
         tags['推断特征']['近一个月离开常住地频率'] = '高'
-    elif leave_home_frequency > 5:
+    elif leave_home_frequency > 4:
         tags['推断特征']['近一个月离开常住地频率'] = '中'
     else:
         tags['推断特征']['近一个月离开常住地频率'] = '低'
@@ -87,7 +87,7 @@ def add_inference_tags(tags, live_place) -> dict:
     if hospital_frequency > 5:
         tags['推断特征']['近期健康状态'] = '不佳'
     elif hospital_frequency > 2:
-        tags['推断特征']['近期健康状态'] = '良好'
+        tags['推断特征']['近期健康状态'] = '一般'
     else:
         tags['推断特征']['近期健康状态'] = '健康'
 

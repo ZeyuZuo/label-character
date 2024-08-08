@@ -147,7 +147,7 @@ export default {
 
 .timeline {
   list-style-type: none;
-  padding: 0;
+  padding: 0 0 20px 0;
 }
 
 .timeline-item {

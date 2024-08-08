@@ -32,6 +32,7 @@ import RelationComponent from "@/views/system/character/components/relationCompo
 import DoubleTimeLineComponent from "@/views/system/character/components/doubleTimeLineComponent.vue";
 import TimeLineComponent from "@/views/system/character/components/timeLineComponent.vue";
 import PersonComponent from "@/views/system/character/components/personComponent.vue";
+import ResponsiblePartyComponent from "@/views/system/character/components/responsiblePartyComponent.vue";
 import {getPersonInfo, getPersonTag} from "@/api/system/character";
 
 export default {
@@ -114,10 +115,6 @@ export default {
         "label": "人物关系",
         "value": 3,
         "id": 102,
-      }, {
-        "label": "推断特征",
-        "value": 4,
-        "id": 103
       }],
       tag_numProps: {
         "multiple": false
@@ -209,17 +206,26 @@ export default {
           } else if (this.formData.tag_num.includes(14)) {
             this.currentComponent = TimeLineComponent;
             this.componentProps = {
-              data: this.person_tag['社交媒体痕迹']
+              data: this.person_tag['社交媒体痕迹'],
+              guess: '近一个月社交媒体活跃度',
+              guessData: this.person_tag['推断特征']['近一个月社交媒体活跃度']
             }
           } else if (this.formData.tag_num.includes(15)) {
             this.currentComponent = TimeLineComponent;
             this.componentProps = {
-              data: this.person_tag['医疗记录']
+              data: this.person_tag['医疗记录'],
+              guess: '近期健康状态',
+              guessData: this.person_tag['推断特征']['近期健康状态']
             }
           } else if (this.formData.tag_num.includes(5)) {
             this.currentComponent = PersonComponent;
             this.componentProps = {
               data: this.person_info
+            }
+          } else if (this.formData.tag_num.includes(7)) {
+            this.currentComponent = ResponsiblePartyComponent;
+            this.componentProps = {
+              data: this.person_tag['责任主体']
             }
           }
         }
