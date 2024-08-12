@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="timeline-container">
-<!--      <div class="vertical-line"></div>-->
+      <div class="vertical-line"></div>
       <div v-for="(record, index) in buildHtml" :key="index" class="timeline-item">
         <div v-html="record.details"></div>
       </div>
@@ -72,15 +72,36 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .timeline-item {
   position: relative;
   width: 60%;
-  padding: 10px;
+  padding: 5px;
   box-sizing: border-box;
   text-align: left;
   left: 0;
   margin-bottom: 20px; /* Add some space between items */
+  border: 1px solid #ccc; /* 添加外边框 */
+  background-color: #f9f9f9;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 26%;
+  height: 3px;
+  background-color: #3ab7dd;
+}
+
+.vertical-line {
+  position: absolute;
+  left:75%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #3ab7dd;
 }
 
 .container {
